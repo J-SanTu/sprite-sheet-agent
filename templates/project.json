@@ -1,0 +1,16 @@
+{
+  "character_id": "character_01",
+  "references": {
+    "front": "references/front.png",
+    "side": "references/side.png",
+    "back": "references/back.png"
+  },
+  "actions_approved": false,
+  "structure_approved": false,
+  "module_boundaries_approved": false,
+  "palette_approved": false,
+  "provider": null,
+  "max_generation_calls_per_frame": 3,
+  "max_c_composites": 2,
+  "review_entry": "review/index.html"
+}

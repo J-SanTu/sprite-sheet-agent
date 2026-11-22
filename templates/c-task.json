@@ -1,0 +1,10 @@
+{
+  "original": "original.png",
+  "generated": "generated.png",
+  "protection_mask": "protection-mask.png",
+  "coordinates_confirmed": false,
+  "protected_regions_stationary": false,
+  "attempt": 1,
+  "task_id": "character_action_direction_frame_v1",
+  "registry": "state/c-registry.json"
+}

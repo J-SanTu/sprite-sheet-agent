@@ -1,0 +1,17 @@
+{
+  "prop_id": "prop_01",
+  "version": 1,
+  "reference_views": {},
+  "modules": [],
+  "unknown_geometry": [],
+  "visual_approved": false,
+  "palette_approved": false,
+  "binding": {
+    "anatomical_side": null,
+    "body_socket": null,
+    "prop_socket": null,
+    "length_over_character_height": null,
+    "height_definition": null
+  },
+  "interaction_states": []
+}

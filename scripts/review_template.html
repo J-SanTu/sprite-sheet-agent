@@ -1,0 +1,37 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sprite 动作审核</title>
+<style>
+body{margin:24px auto;padding:0 24px;max-width:1400px;background:#eeebe4;color:#282b2b;font:15px system-ui}h1{font-size:26px}button,input,select,textarea{font:inherit;padding:8px;border:1px solid #aaa;border-radius:4px}button{cursor:pointer}article{background:#fff;padding:20px;margin:24px 0;border-radius:8px}header,.controls,.columns,.refs,.neighbors{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.columns>figure{flex:1;min-width:210px;margin:0}.stage{height:360px;display:flex;justify-content:center;align-items:center;background-color:#ddd;background-image:conic-gradient(#bbb 25%,transparent 0 50%,#bbb 0 75%,transparent 0);background-size:20px 20px;overflow:auto}.stage img{max-height:100%;max-width:100%;object-fit:contain;image-rendering:pixelated}article[data-bg=dark] .stage{background:#222}article[data-bg=light] .stage{background:#fafafa}.refs img{max-height:130px;max-width:180px;object-fit:contain;image-rendering:pixelated}.neighbors .stage{height:140px;width:130px}.frames{display:flex;overflow-x:auto;gap:8px}.frames img{height:140px;image-rendering:pixelated}.frames a{color:inherit;white-space:nowrap}textarea{display:block;width:95%;margin:12px 0}summary{cursor:pointer;margin:12px 0}.status{color:#725227}.warning{color:#994122}figure>figcaption{margin:6px 0}input[type=range]{min-width:200px}details img.gif{max-height:250px;max-width:48%;image-rendering:pixelated}footer{margin:32px 0 12px;text-align:center;color:#777;font-size:13px;letter-spacing:.08em}
+</style>
+<h1>Sprite 动作审核</h1><p>仅展示 manifest 指定的有效版本。结构、人物审核分别记录；导出意见后由工具核验版本并导入。自审、用户确认、引擎验证相互独立。</p>
+<header><input id="search" placeholder="搜索动作、方向或组ID"><label>审核人 <input id="reviewer" placeholder="填写你的名字"></label><button id="export">导出审核意见 JSON</button><span id="notice" role="status"></span></header><main id="groups"></main><footer>design by santu</footer>
+<script>
+const groups=/*GROUP_DATA*/[];
+const decisions=new Map();
+function el(tag,text,parent){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(parent)parent.append(e);return e;}
+function img(src,parent){const e=el('img',undefined,parent);e.src=src;e.alt='审核图';return e;}
+for(const g of groups){
+ const a=el('article',undefined,document.querySelector('#groups'));a.dataset.bg='check';a.dataset.key=[g.id,g.action,g.direction,g.version].join(' ').toLowerCase();
+ el('h2',`${g.id} · ${g.action} · ${g.direction} · ${g.version}`,a);
+ el('p',`结构 ${g.statuses.structure} / 人物 ${g.character?g.statuses.character:'尚无人物'} / 运行循环 ${g.loop?'是':'否'}`,a).className='status';
+ if(g.issues.length)el('p',JSON.stringify(g.issues),a).className='warning';
+ const refs=el('div',undefined,a);refs.className='refs';el('span','身份 / 颜色 / 物品参考',refs);g.references.forEach(r=>img(r,refs));
+ const controls=el('div',undefined,a);controls.className='controls';const play=el('button','播放',controls),prev=el('button','上一帧',controls),next=el('button','下一帧',controls),slider=el('input',undefined,controls);slider.type='range';slider.min=0;slider.max=g.frames.length-1;slider.value=0;
+ const label=el('span','',controls),bg=el('select',undefined,controls);[['check','棋盘底'],['light','浅底'],['dark','深底']].forEach(([v,t])=>{let o=el('option',t,bg);o.value=v});bg.onchange=()=>a.dataset.bg=bg.value;
+ const size=el('input',undefined,controls);size.type='number';size.min=32;size.max=1200;size.value=360;size.setAttribute('aria-label','统一画布显示高度');el('span','统一画布显示高度(px)',controls);
+ const columns=el('div',undefined,a);columns.className='columns';const views={};for(const [k,t] of [['structure','结构'],['raw','AI RAW'],['selected','选定候选']]){if(k!=='structure'&&!g.character)continue;const f=el('figure',undefined,columns);el('figcaption',t,f);let s=el('div',undefined,f);s.className='stage';views[k]=img(g.frames[0][k],s)}
+ const neighbors=el('div',undefined,a);neighbors.className='neighbors';const ns=[];if(g.character){el('span','相邻帧（固定画布，不逐帧裁切）',neighbors);for(let j=0;j<3;j++){let f=el('figure',undefined,neighbors),c=el('figcaption','',f),s=el('div',undefined,f);s.className='stage';ns.push([img('',s),c])}}
+ let index=0,timer=null;const info=el('p','',a);
+ function stop(){clearTimeout(timer);timer=null;play.textContent='播放'}
+ function show(){let f=g.frames[index];slider.value=index;label.textContent=`${f.id} · ${f.duration_ms}ms`;for(const k in views)views[k].src=f[k];ns.forEach(([im,c],j)=>{let n=index+j-1;if(g.loop)n=(n+g.frames.length)%g.frames.length;if(n<0||n>=g.frames.length){im.style.visibility='hidden';c.textContent='边界外';return}im.style.visibility='visible';im.src=g.frames[n].selected;c.textContent=g.frames[n].id});info.textContent=g.character?`方法 ${f.method} / 模型次数 ${f.attempts} / 问题 ${JSON.stringify(f.issues)}`:'';}
+ function tick(){if(index===g.frames.length-1&&!g.loop){stop();return}index=(index+1)%g.frames.length;show();timer=setTimeout(tick,g.frames[index].duration_ms)}
+ play.onclick=()=>{if(timer!==null){stop();return}if(index===g.frames.length-1)index=0;show();play.textContent='暂停';timer=setTimeout(tick,g.frames[index].duration_ms)};
+ prev.onclick=()=>{stop();index=Math.max(0,index-1);show()};next.onclick=()=>{stop();index=Math.min(g.frames.length-1,index+1);show()};slider.oninput=()=>{stop();index=+slider.value;show()};size.onchange=()=>{let h=Math.min(1200,Math.max(32,+size.value||360));columns.querySelectorAll('.stage').forEach(s=>s.style.height=h+'px')};show();
+ const full=el('details',undefined,a);el('summary','完整帧序 / 独立PNG / JSON',full);const row=el('div',undefined,full);row.className='frames';g.frames.forEach(f=>{let x=el('a',undefined,row);x.href=f.selected||f.structure;img(f.selected||f.structure,x);el('div',f.id,x)});const link=el('a','结构JSON',full);link.href=g.structure.json;
+ const gifs=el('details',undefined,a);el('summary','GIF对照（独立重播预览，上方逐帧播放器可暂停）',gifs);img(g.structure.gif,gifs).className='gif';if(g.character)img(g.character.gif,gifs).className='gif';
+ const stage=el('select',undefined,a);['structure',...(g.character?['character']:[])].forEach(k=>{let o=el('option',k==='structure'?'结构审核':'人物审核',stage);o.value=k});const choice=el('select',undefined,a);[['','未决定'],['APPROVED','通过'],['NEEDS_REPAIR','待修'],['REJECTED','驳回']].forEach(([v,t])=>{let o=el('option',t,choice);o.value=v});
+ const note=el('textarea',undefined,a);note.placeholder='写明帧ID与具体问题，例如 F02 右手朝向错误';
+ const keep=el('button','保存这条意见',a);const saved=el('span','',a);keep.onclick=()=>{if(!choice.value){saved.textContent='请先选择结论';return}decisions.set(g.id+':'+stage.value,{group_id:g.id,stage:stage.value,snapshot:g.snapshots[stage.value],status:choice.value,note:note.value});saved.textContent='已记录，需顶部导出'};
+}
+document.querySelector('#search').oninput=e=>document.querySelectorAll('article').forEach(a=>a.hidden=!a.dataset.key.includes(e.target.value.toLowerCase()));
+document.querySelector('#export').onclick=()=>{const reviewer=document.querySelector('#reviewer').value.trim(),notice=document.querySelector('#notice');if(!reviewer||!decisions.size){notice.textContent='请填写审核人并保存至少一条意见';return}const records=[...decisions.values()].map(r=>({...r,reviewer,reviewed_at:new Date().toISOString(),source:'human'}));const u=URL.createObjectURL(new Blob([JSON.stringify({records},null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=u;a.download='review-feedback.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);notice.textContent='已导出，导入后才写入审核历史'};
+</script></html>

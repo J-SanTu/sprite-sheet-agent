@@ -1,0 +1,16 @@
+{
+  "request_id": "action_direction_F01_request_01",
+  "frame_id": "F01",
+  "group_id": "action_direction_v1",
+  "manifest": "manifest.json",
+  "reviews": "reviews.json",
+  "palette": {"file": "character_palette.json", "sha256": "填入实际SHA256"},
+  "palette_approval": {"status": "APPROVED", "source": "human", "reviewer": "", "reviewed_at": "", "sha256": ""},
+  "budget": "budget.json",
+  "method": "B",
+  "prompt": "只写当前这一帧的动作要求",
+  "current_constraints": {"frame_id": "F01", "pose_requirements": []},
+  "adapter": {"name": "宿主适配器名", "query_instructions": "回执查询方法", "supports_mask": false},
+  "mask_degradation_reason": "没有模型蒙版能力时填写明确降级原因",
+  "registry": "state/request-registry.json"
+}

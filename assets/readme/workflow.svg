@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="208" viewBox="0 0 1200 208" role="img" aria-labelledby="title desc">
+<title id="title">Sprite production: pose, review, export</title><desc id="desc">Design pose structure, review independent frames with human decisions, then export a sprite sheet. Each stage retains its version.</desc>
+<rect width="1200" height="208" rx="16" fill="#f0eee6"/>
+<g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" fill="#292b30">
+<path d="M360 104H430M760 104H830" stroke="#b2b3ad" stroke-width="3"/><path d="m418 96 12 8-12 8m400-16 12 8-12 8" fill="none" stroke="#b2b3ad" stroke-width="3"/>
+<g transform="translate(38 42)"><circle cx="44" cy="22" r="18" fill="none" stroke="#6d6e73" stroke-width="3"/><path d="M44 40v46M44 49 14 66 5 87M44 86 18 122" stroke="#c16b41" stroke-width="5" fill="none"/><path d="m44 49 31 15 18-28M44 86l29 36" stroke="#3186a5" stroke-width="5" fill="none"/><text x="126" y="45" font-size="43" font-weight="650">Pose</text><text x="126" y="86" font-size="24" fill="#6d6e73">01 / structure</text></g>
+<g transform="translate(451 42)"><rect x="0" y="15" width="77" height="102" rx="5" fill="none" stroke="#3186a5" stroke-width="3"/><path d="m18 58 13 13 28-30M18 92h42" fill="none" stroke="#c16b41" stroke-width="5"/><text x="102" y="45" font-size="43" font-weight="650">Review</text><text x="102" y="86" font-size="24" fill="#6d6e73">02 / decisions</text></g>
+<g transform="translate(850 42)"><g fill="#3186a5"><rect y="18" width="33" height="40" rx="3"/><rect x="43" y="18" width="33" height="40" rx="3"/><rect y="68" width="33" height="40" rx="3"/></g><rect x="43" y="68" width="33" height="40" rx="3" fill="#c16b41"/><text x="100" y="45" font-size="43" font-weight="650">Export</text><text x="100" y="86" font-size="24" fill="#6d6e73">03 / PNG + JSON</text></g>
+</g></svg>

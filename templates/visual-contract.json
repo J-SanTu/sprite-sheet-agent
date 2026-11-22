@@ -1,0 +1,28 @@
+{
+  "shared_standard": {
+    "pixel_style": "",
+    "outline": "",
+    "lighting": ""
+  },
+  "character_id": "character_01",
+  "source_sha256": "",
+  "status": "MODULES_PROPOSED",
+  "modules": [],
+  "color_fields": [
+    "role",
+    "hex",
+    "rgb",
+    "purpose",
+    "sample_count",
+    "module_fraction",
+    "sampling_method",
+    "value_kind",
+    "confidence",
+    "review_status"
+  ],
+  "allowed_value_kinds": [
+    "raw_sample",
+    "cluster_representative",
+    "human_confirmed"
+  ]
+}
